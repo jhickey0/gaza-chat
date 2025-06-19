@@ -1,7 +1,7 @@
 import openai
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 Gazan_prompt = """
 Translate the following text between English and Gazan Arabic.
@@ -14,10 +14,13 @@ Output:"""
 
 def translate(text: str) -> str:
     prompt = Gazan_prompt.format(text=text)
-    resp = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=prompt,
-        max_tokens=60,
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a Gazan Arabic translator."},
+            {"role": "user", "content": prompt}
+        ],
         temperature=0.7,
+        max_tokens=60,
     )
-    return resp.choices[0].text.strip()
+    return response.choices[0].message.content.strip()
