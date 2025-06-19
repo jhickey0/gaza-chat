@@ -1,9 +1,12 @@
+import eventlet
+eventlet.monkey_patch()  # Must be first before anything else
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO, send
 from translate import translate
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 @app.route('/')
 def index():
